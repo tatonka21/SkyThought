@@ -17,7 +17,6 @@
 # limitations under the License.
 
 import os
-import random
 from enum import Enum, unique
 from typing import TYPE_CHECKING, Any, Dict, List
 
@@ -31,6 +30,7 @@ from transformers.utils.versions import require_version
 from ...extras import logging
 from ...extras.constants import FILEEXT2TYPE
 from ...extras.misc import get_current_device
+import secrets
 
 
 if TYPE_CHECKING:
@@ -84,13 +84,13 @@ def _get_quantization_dataset(tokenizer: "PreTrainedTokenizer", model_args: "Mod
             if n_try > 100:
                 raise ValueError("Cannot find satisfying example, considering decrease `export_quantization_maxlen`.")
 
-            sample_idx = random.randint(0, len(dataset) - 1)
+            sample_idx = secrets.SystemRandom().randint(0, len(dataset) - 1)
             sample: Dict[str, "torch.Tensor"] = tokenizer(dataset[sample_idx]["text"], return_tensors="pt")
             n_try += 1
             if sample["input_ids"].size(1) > maxlen:
                 break  # TODO: fix large maxlen
 
-        word_idx = random.randint(0, sample["input_ids"].size(1) - maxlen - 1)
+        word_idx = secrets.SystemRandom().randint(0, sample["input_ids"].size(1) - maxlen - 1)
         input_ids = sample["input_ids"][:, word_idx : word_idx + maxlen]
         attention_mask = sample["attention_mask"][:, word_idx : word_idx + maxlen]
         samples.append({"input_ids": input_ids.tolist(), "attention_mask": attention_mask.tolist()})
