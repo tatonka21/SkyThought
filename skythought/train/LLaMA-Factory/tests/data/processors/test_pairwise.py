@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import random
 from typing import Dict, List
 
 import pytest
@@ -22,6 +21,7 @@ from transformers import AutoTokenizer
 
 from llamafactory.extras.constants import IGNORE_INDEX
 from llamafactory.train.test_utils import load_train_dataset
+import secrets
 
 
 DEMO_DATA = os.getenv("DEMO_DATA", "llamafactory/demo_data")
@@ -58,7 +58,7 @@ def test_pairwise_data(num_samples: int):
     train_dataset = load_train_dataset(**TRAIN_ARGS)
     ref_tokenizer = AutoTokenizer.from_pretrained(TINY_LLAMA)
     original_data = load_dataset(DEMO_DATA, name="dpo_en_demo", split="train")
-    indexes = random.choices(range(len(original_data)), k=num_samples)
+    indexes = secrets.SystemRandom().choices(range(len(original_data)), k=num_samples)
     for index in indexes:
         chosen_messages = original_data["conversations"][index] + [original_data["chosen"][index]]
         rejected_messages = original_data["conversations"][index] + [original_data["rejected"][index]]

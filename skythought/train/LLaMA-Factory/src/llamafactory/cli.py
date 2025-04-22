@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import random
 import subprocess
 import sys
 from enum import Enum, unique
@@ -27,6 +26,7 @@ from .extras.env import VERSION, print_env
 from .extras.misc import get_device_count
 from .train.tuner import export_model, run_exp
 from .webui.interface import run_web_demo, run_web_ui
+import secrets
 
 
 USAGE = (
@@ -89,7 +89,7 @@ def main():
         force_torchrun = os.getenv("FORCE_TORCHRUN", "0").lower() in ["true", "1"]
         if force_torchrun or get_device_count() > 1:
             master_addr = os.getenv("MASTER_ADDR", "127.0.0.1")
-            master_port = os.getenv("MASTER_PORT", str(random.randint(20001, 29999)))
+            master_port = os.getenv("MASTER_PORT", str(secrets.SystemRandom().randint(20001, 29999)))
             logger.info_rank0(f"Initializing distributed tasks at: {master_addr}:{master_port}")
             process = subprocess.run(
                 (

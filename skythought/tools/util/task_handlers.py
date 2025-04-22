@@ -2,7 +2,6 @@ import copy
 import json
 import multiprocessing
 import os
-import random
 import re
 import numpy as np
 from datasets import load_dataset
@@ -13,6 +12,7 @@ from .taco.testing_util import run_test as taco_run_test
 from .math.testing_util import strip_answer_string, get_multiple_choice_answer, extract_answer, math_equal
 from .livecodebench.testing_util import unsafe_lcb_runTests, map_to_example, has_test_type, post_process_code, translate_private_test_cases
 from .common import TimeoutException, timeout
+import secrets
 
 def has_code(response):
     pattern = r"```(?:[a-zA-Z]*)\n(.*?)```"
@@ -158,7 +158,7 @@ class GPQADiamondTaskHandler(TaskHandler):
             data["Incorrect Answer 2"],
             data["Incorrect Answer 3"]
         ]
-        random.shuffle(answers)
+        secrets.SystemRandom().shuffle(answers)
 
         # Map options to letters
         options = ["A", "B", "C", "D"]

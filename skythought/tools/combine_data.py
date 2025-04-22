@@ -1,6 +1,6 @@
 import json
-import random
 from util.prompts import system_prompt
+import secrets
 
 still2_jsonl_file = "../../data/public_long_form_thought_data_5k.jsonl"
 code_json_file = "../../data/converted_apps_long_form_thought_data_5k.json"
@@ -44,7 +44,7 @@ with open(code_json_file, "r") as f:
 
 all_data.extend(code_data)
 print(f"First item slice before shuffle: {all_data[0]['conversations'][-1]['value'][-50:-1]}")
-random.shuffle(all_data)
+secrets.SystemRandom().shuffle(all_data)
 print(f"First item slice after shuffle: {all_data[0]['conversations'][-1]['value'][-50:-1]}")
 print(len(all_data))
 
