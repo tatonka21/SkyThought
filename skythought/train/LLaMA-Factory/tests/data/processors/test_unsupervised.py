@@ -13,13 +13,13 @@
 # limitations under the License.
 
 import os
-import random
 
 import pytest
 from datasets import load_dataset
 from transformers import AutoTokenizer
 
 from llamafactory.train.test_utils import load_train_dataset
+import secrets
 
 
 DEMO_DATA = os.getenv("DEMO_DATA", "llamafactory/demo_data")
@@ -51,7 +51,7 @@ def test_unsupervised_data(num_samples: int):
     train_dataset = load_train_dataset(**TRAIN_ARGS)
     ref_tokenizer = AutoTokenizer.from_pretrained(TINY_LLAMA)
     original_data = load_dataset(DEMO_DATA, name="system_chat", split="train")
-    indexes = random.choices(range(len(original_data)), k=num_samples)
+    indexes = secrets.SystemRandom().choices(range(len(original_data)), k=num_samples)
     for index in indexes:
         messages = original_data["messages"][index]
         ref_ids = ref_tokenizer.apply_chat_template(messages)
