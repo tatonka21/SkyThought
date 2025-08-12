@@ -2,6 +2,7 @@ import argparse
 import subprocess
 import os
 import json
+from security import safe_command
 
 # Define eval to split mapping
 eval_to_split = {
@@ -74,7 +75,7 @@ def main():
         print(f"Running eval {eval_name} with command {command}")
         all_logs += f"\nRunning eval: {eval_name} with command {command}\n"
         try:
-            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as proc:
+            with safe_command.run(subprocess.Popen, command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as proc:
                 output_lines = []
                 for line in proc.stdout:
                     print(line, end="")  # Stream output to the console
